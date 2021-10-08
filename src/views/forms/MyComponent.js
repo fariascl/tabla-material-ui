@@ -6,6 +6,7 @@ const MyComponent = () => {
     const [nombre, setNombre] = useState("")
     const [apellido, setApellido] = useState("")
     const [personas, setPersonas] = useState([])
+    const [id_persona, setId] = useState()
 
     const handleInputChangeNombre = (event) => {
         setNombre(event.target.value)
@@ -34,6 +35,28 @@ const MyComponent = () => {
         } catch (error){
             console.error(error)
         }
+    }
+
+    const editPersona = (id_persona) => {
+        
+        axios.put(`http://192.99.144.232:5000/api/personas/${id_persona}`, {
+            _id: id_persona,
+            nombre: nombre,
+            apellido: apellido,
+            grupo: 18
+        })
+        .then(function (response){
+            if(response.status == 200){
+                alert("Registro modificado con exito")
+                getPersonas()
+            }
+            else {
+                alert("Error al guardar")
+            }
+        })
+        .catch(function (error){
+            console.log(error)
+        });
     }
 
     function guardarPersona(){
@@ -101,8 +124,17 @@ const MyComponent = () => {
     
 
     const handleRowClick = (rowData, rowMeta) => {
-        console.log(rowData.name)
+        console.log(rowData.name);
+        setNombre(rowData.nombre);
+        setApellido(rowData.apellido);
+        setId(rowData._id)
     };
+
+    const handleInputClean = () => {
+        setNombre('');
+        setApellido('');
+        setId(0);
+    }
 
     const options = {
         filterType: 'checkbox',
@@ -120,10 +152,19 @@ const MyComponent = () => {
                 <div>
                     <input type="text" placeholder="Apellido" name="apellido" onChange={handleInputChangeApellido} value={apellido}></input>
                 </div>
-                <button onClick={enviarDatos}>Enviar</button>
+
+                {
+                        id_persona ?
+                        <button onClick={()=>{editPersona(id_persona)}}>Editar</button>
+                        :
+                        <button onClick={enviarDatos}>Enviar</button>
+                        
+                        
+                }
+                <button onClick={handleInputClean}>Limpiar</button>
             </div>
             <MaterialDatatable
-            title={"Employee List"}
+            title={"Miembros de grupo"}
             data={personas}
             columns={columns}
             options={options}
