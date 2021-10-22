@@ -8,7 +8,7 @@ import PersonasMaterial from './views/forms/PersonasMaterial';
 
 ReactDOM.render(
   <React.StrictMode>
-    <PersonasMaterial />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
