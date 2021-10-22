@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import MyComponent from './views/forms/MyComponent';
 import reportWebVitals from './reportWebVitals';
+import PersonasMaterial from './views/forms/PersonasMaterial';
 
 ReactDOM.render(
   <React.StrictMode>
-    <MyComponent />
+    <PersonasMaterial />
   </React.StrictMode>,
   document.getElementById('root')
 );
