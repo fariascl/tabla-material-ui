@@ -3,6 +3,7 @@ import axios from 'axios';
 import MaterialDatatable from 'material-datatable';
 import { useMediaQuery } from 'react-responsive';
 import { Container, Grid, Button, Typography, TextField } from '@material-ui/core';
+import Swal from 'sweetalert2'
 
 const PersonasMaterial = () => {
     const [nombre, setNombre] = useState("")
@@ -63,23 +64,35 @@ const PersonasMaterial = () => {
     }
 
     const deletePersona = (id_persona) => {
-        axios.delete(`http://192.99.144.232:5000/api/personas/${id_persona}`, {
-            _id: id_persona
-        })
-        .then(function (response){
-            if(response.status == 200){
-                alert("Registro eliminado")
-                getPersonas()
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`http://192.99.144.232:5000/api/personas/${id_persona}`, {
+                    _id: id_persona
+                })
+                .then (function (response){
+                    if(response.status == 200){
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                          )
+                        getPersonas()
+                    }
+                })
+                .catch(function (error){
+                    console.log(error)
+                });    
             }
-            else {
-                alert("Error al eliminar la persona")
-            }
-        })
-        .catch(function (error){
-            console.log(error)
-        });
+          })
     }
-
     function guardarPersona(){
         axios.post('http://192.99.144.232:5000/api/personas', {
             nombre: nombre,
@@ -156,7 +169,7 @@ const PersonasMaterial = () => {
     const handleInputClean = () => {
         setNombre('');
         setApellido('');
-        setId(0);
+        setId('');
     }
 
     const options = {
@@ -186,7 +199,7 @@ const PersonasMaterial = () => {
             {
                         id_persona ?
                         <Grid item xs={12} md={2}>
-                        <Button variant="contained" onClick={()=>deletePersona(id_persona)} color="secondary" fullWidth
+                        <Button variant="contained" onClick={()=>{deletePersona(id_persona)}} color="secondary" fullWidth
                         >Eliminar</Button>
                         </Grid>
                         :
@@ -196,7 +209,7 @@ const PersonasMaterial = () => {
                         </Grid>
                         
                         
-                }
+            }
         </Grid>
 
   
